@@ -78,7 +78,7 @@ void load_level(int offset) {
     current_level = {rows, columns, current_level_data};
 
     // Instantiate entities
-    spawn_player();
+    c_player.spawn();
     spawn_enemies();
 
     // Calculate positioning and sizes
