@@ -3,8 +3,9 @@
 
 #include "raylib.h"
 
+const int LEVEL_COUNT = 3;
+
 class player {
-private:
     float y_velocity = 0;
     Vector2 pos;
 
@@ -12,7 +13,7 @@ private:
     bool is_looking_forward;
     bool is_moving;
 
-    int level_scores[3];
+    int level_scores[LEVEL_COUNT];
 
     const int MAX_LIVES = 5;
     int lives = MAX_LIVES;
@@ -20,20 +21,13 @@ public:
     player();
 
     void reset_stats();
-
     void increment_score();
-
     int get_total_score();
-
     void spawn();
-
     void kill();
-
     void move_horizontally(float delta);
-
     void update_gravity();
-
-    void update_player();
+    void update();
 
     // getters and setters
     int get_lives();

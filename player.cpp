@@ -88,7 +88,7 @@ void player::update_gravity() {
     }
 }
 
-void player::update_player() {
+void player::update() {
     update_gravity();
 
     // Interacting with other level elements
@@ -126,11 +126,11 @@ void player::update_player() {
     }
 
     // Upon colliding with an enemy...
-    if (is_colliding_with_enemies(pos)) {
+    if (c_enemy.is_colliding_with(pos)) {
         // ...check if their velocity is downwards...
         if (y_velocity > 0) {
             // ...if yes, award the player and kill the enemy
-            remove_colliding_enemy(pos);
+            c_enemy.remove_colliding(pos);
             PlaySound(kill_enemy_sound);
 
             increment_score();

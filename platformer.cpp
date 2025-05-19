@@ -35,8 +35,8 @@ void update_game() {
                 c_player.set_y_velocity(-JUMP_STRENGTH);
             }
 
-            c_player.update_player();
-            update_enemies();
+            c_player.update();
+            c_enemy.update();
 
             if (IsKeyPressed(KEY_ESCAPE)) {
                 game_state = PAUSED_STATE;
