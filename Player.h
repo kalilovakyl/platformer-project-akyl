@@ -5,7 +5,7 @@
 
 const int LEVEL_COUNT = 3;
 
-class player {
+class Player {
     float y_velocity = 0;
     Vector2 pos;
 
@@ -18,7 +18,7 @@ class player {
     const int MAX_LIVES = 5;
     int lives = MAX_LIVES;
 public:
-    player();
+    Player();
 
     void reset_stats();
     void increment_score();
@@ -42,6 +42,6 @@ public:
     void set_y_velocity(float);
 };
 
-extern player c_player;
+extern Player c_player;
 
 #endif //PLAYER_H

@@ -4,18 +4,14 @@
 #include "raylib.h"
 #include <vector>
 
-class enemy {
+class Enemy {
     Vector2 pos;
     bool is_looking_right;
-
 public:
-    enemy(const Vector2& c_pos, bool c_is_looking_right = true)
+    Enemy(const Vector2& c_pos, bool c_is_looking_right = true)
     : pos(c_pos), is_looking_right(c_is_looking_right) {};
 
     void update();
-
-    // Custom is_colliding function for enemies
-
 
     // setters and getters
     void set_x(float);

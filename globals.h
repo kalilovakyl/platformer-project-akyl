@@ -2,10 +2,10 @@
 #define GLOBALS_H
 
 #include "raylib.h"
-#include "player.h"
-#include "enemy.h"
-#include "enemies.h"
-#include "level.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Enemy_manager.h"
+#include "Level.h"
 
 #include <vector>
 #include <string>
@@ -88,6 +88,8 @@ inline const float BOUNCE_OFF_ENEMY      = 0.1f;
 inline const float GRAVITY_FORCE         = 0.01f;
 
 /* Player data */
+
+
 
 /* Enemy data */
 

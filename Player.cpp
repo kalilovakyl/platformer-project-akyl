@@ -1,23 +1,23 @@
-#include "player.h"
+#include "Player.h"
 #include "globals.h"
 
-player c_player;
+Player c_player;
 
-player::player() {}
+Player::Player() {}
 
-void player::reset_stats() {
+void Player::reset_stats() {
     lives = MAX_LIVES;
     for (int i = 0; i < LEVEL_COUNT; i++) {
         level_scores[i] = 0;
     }
 }
 
-void player::increment_score() {
+void Player::increment_score() {
     PlaySound(coin_sound);
-    level_scores[level::get_index()]++;
+    level_scores[Level::get_index()]++;
 }
 
-int player::get_total_score() {
+int Player::get_total_score() {
     int sum = 0;
 
     for (int i = 0; i < LEVEL_COUNT; i++) {
@@ -27,36 +27,36 @@ int player::get_total_score() {
     return sum;
 }
 
-void player::spawn() {
+void Player::spawn() {
     y_velocity = 0;
 
-    for (size_t row = 0; row < level::get_rows(); ++row) {
-        for (size_t column = 0; column < level::get_columns(); ++column) {
-            char cell = level::get_cell(row, column);;
+    for (size_t row = 0; row < Level::get_rows(); ++row) {
+        for (size_t column = 0; column < Level::get_columns(); ++column) {
+            char cell = Level::get_cell(row, column);;
 
             if (cell == PLAYER) {
                 pos.x = column;
                 pos.y = row;
-                level::set_cell(row, column, AIR);
+                Level::set_cell(row, column, AIR);
                 return;
             }
         }
     }
 }
 
-void player::kill() {
+void Player::kill() {
     // Decrement a life and reset all collected coins in the current level
     PlaySound(player_death_sound);
     game_state = DEATH_STATE;
     lives--;
-    level_scores[level::get_index()] = 0;
+    level_scores[Level::get_index()] = 0;
 }
 
-void player::move_horizontally(float delta) {
+void Player::move_horizontally(float delta) {
     // See if the player can move further without touching a wall;
     // otherwise, prevent them from getting into a wall by rounding their position
     float next_x = pos.x + delta;
-    if (!level::is_colliding({next_x, pos.y}, WALL)) {
+    if (!Level::is_colliding({next_x, pos.y}, WALL)) {
         pos.x = next_x;
     }
     else {
@@ -69,9 +69,9 @@ void player::move_horizontally(float delta) {
     if (delta != 0) is_moving = true;
 }
 
-void player::update_gravity() {
+void Player::update_gravity() {
     // Bounce downwards if approaching a ceiling with upwards velocity
-    if (level::is_colliding({pos.x, pos.y - 0.1f}, WALL) && y_velocity < 0) {
+    if (Level::is_colliding({pos.x, pos.y - 0.1f}, WALL) && y_velocity < 0) {
         y_velocity = CEILING_BOUNCE_OFF;
     }
 
@@ -81,23 +81,23 @@ void player::update_gravity() {
 
     // If the player is on ground, zero player's y-velocity
     // If the player is *in* ground, pull them out by rounding their position
-    is_on_ground = level::is_colliding({pos.x, pos.y + 0.1f}, WALL);
+    is_on_ground = Level::is_colliding({pos.x, pos.y + 0.1f}, WALL);
     if (is_on_ground) {
         y_velocity = 0;
         pos.y = roundf(pos.y);
     }
 }
 
-void player::update() {
+void Player::update() {
     update_gravity();
 
     // Interacting with other level elements
-    if (level::is_colliding(pos, COIN)) {
-        level::get_collider(pos, COIN) = AIR; // Removes the coin
+    if (Level::is_colliding(pos, COIN)) {
+        Level::get_collider(pos, COIN) = AIR; // Removes the coin
         increment_score();
     }
 
-    if (level::is_colliding(pos, EXIT)) {
+    if (Level::is_colliding(pos, EXIT)) {
         // Reward player for being swift
         if (timer > 0) {
             // For every 9 seconds remaining, award the player 1 coin
@@ -111,7 +111,7 @@ void player::update() {
         }
         else {
             // Allow the player to exit after the level timer goes to zero
-            level::load(1);
+            Level::load(1);
             PlaySound(exit_sound);
         }
     }
@@ -121,7 +121,7 @@ void player::update() {
     }
 
     // Kill the player if they touch a spike or fall below the level
-    if (level::is_colliding(pos, SPIKE) || pos.y > level::get_rows()) {
+    if (Level::is_colliding(pos, SPIKE) || pos.y > Level::get_rows()) {
         kill();
     }
 
@@ -143,36 +143,36 @@ void player::update() {
     }
 }
 
-int player::get_lives() {
+int Player::get_lives() {
     return lives;
 }
 
-float player::get_x() {
+float Player::get_x() {
     return pos.x;
 }
 
-float player::get_y() {
+float Player::get_y() {
     return pos.y;
 }
 
-bool player::get_is_on_ground() {
+bool Player::get_is_on_ground() {
     return is_on_ground;
 }
 
-bool player::get_is_looking_forward() {
+bool Player::get_is_looking_forward() {
     return is_looking_forward;
 }
-bool player::get_is_moving() {
+bool Player::get_is_moving() {
     return is_moving;
 };
 
-void player::set_is_moving(bool statement) {
+void Player::set_is_moving(bool statement) {
     is_moving = statement;
 }
 
-void player::set_is_on_ground(bool statement) {
+void Player::set_is_on_ground(bool statement) {
     is_on_ground = statement;
 }
-void player::set_y_velocity(float value) {
+void Player::set_y_velocity(float value) {
     y_velocity = value;
 }

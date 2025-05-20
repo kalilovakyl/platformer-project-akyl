@@ -1,14 +1,14 @@
 #ifndef ENEMIES_H
 #define ENEMIES_H
 
-#include "enemy.h"
+#include "Enemy.h"
 #include <vector>
 #include "raylib.h"
 
-class enemies {
-    std::vector<enemy> all_enemy;
+class Enemy_manager {
+    std::vector<Enemy> all_enemy;
 public:
-    enemies() {}
+    Enemy_manager() {}
 
     void update_all();
     void spawn();
@@ -16,9 +16,9 @@ public:
     void remove_colliding(Vector2 pos);
 
     // getter
-    const std::vector<enemy>& get_all_enemy() const { return all_enemy; }
+    const std::vector<Enemy>& get_all_enemy() const { return all_enemy; }
 };
 
-extern enemies c_enemies;
+extern Enemy_manager c_enemies;
 
 #endif //ENEMIES_H

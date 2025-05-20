@@ -4,15 +4,15 @@
 #include "raylib.h"
 #include "vector"
 
-class level {
+class Level {
     size_t rows = 0, columns = 0;
     char *data = nullptr;
     static int index;
 
-    static std::vector<level> all;
+    static std::vector<Level> all;
     static char* level_data;
 public:
-    level(size_t c_rows, size_t c_columns, char *c_data)
+    Level(size_t c_rows, size_t c_columns, char *c_data)
         : rows(c_rows), columns(c_columns), data(c_data) {}
 
     static bool is_inside(int row, int column);
@@ -32,8 +32,8 @@ public:
     static int get_index();
 };
 
-extern level LEVEL_1;
-extern level LEVEL_2;
-extern level LEVEL_3;
+extern Level LEVEL_1;
+extern Level LEVEL_2;
+extern Level LEVEL_3;
 
 #endif //LEVEL_H
