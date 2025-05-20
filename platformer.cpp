@@ -1,9 +1,6 @@
 #include "raylib.h"
 
 #include "globals.h"
-#include "level.h"
-#include "player.h"
-#include "enemy.h"
 #include "graphics.h"
 #include "assets.h"
 #include "utilities.h"
@@ -16,7 +13,7 @@ void update_game() {
             if (IsKeyPressed(KEY_ENTER)) {
                 SetExitKey(0);
                 game_state = GAME_STATE;
-                load_level(0);
+                level::load(0);
             }
             break;
 
@@ -30,7 +27,7 @@ void update_game() {
             }
 
             // Calculating collisions to decide whether the player is allowed to jump
-            c_player.set_is_on_ground(is_colliding({c_player.get_x(), c_player.get_y() + 0.1f}, WALL));
+            c_player.set_is_on_ground(level::is_colliding({c_player.get_x(), c_player.get_y() + 0.1f}, WALL));
             if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_SPACE)) && c_player.get_is_on_ground()) {
                 c_player.set_y_velocity(-JUMP_STRENGTH);
             }
@@ -47,6 +44,11 @@ void update_game() {
             if (IsKeyPressed(KEY_ESCAPE)) {
                 game_state = GAME_STATE;
             }
+
+            if (IsKeyPressed(KEY_Q)) {
+                exit(0);
+            }
+
             break;
 
         case DEATH_STATE:
@@ -54,7 +56,7 @@ void update_game() {
 
             if (IsKeyPressed(KEY_ENTER)) {
                 if (c_player.get_lives() > 0) {
-                    load_level(0);
+                    level::load(0);
                     game_state = GAME_STATE;
                 }
                 else {
@@ -66,22 +68,24 @@ void update_game() {
 
         case GAME_OVER_STATE:
             if (IsKeyPressed(KEY_ENTER)) {
-                reset_level_index();
+                level::reset_index();
                 c_player.reset_stats();
                 game_state = GAME_STATE;
-                load_level(0);
+                level::load(0);
             }
             break;
 
         case VICTORY_STATE:
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
-                reset_level_index();
+                level::reset_index();
                 c_player.reset_stats();
                 game_state = MENU_STATE;
                 SetExitKey(KEY_ESCAPE);
             }
             break;
     }
+
+
 }
 
 void draw_game() {
@@ -128,7 +132,7 @@ int main() {
     load_fonts();
     load_images();
     load_sounds();
-    load_level();
+    level::load(0);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -139,7 +143,7 @@ int main() {
         EndDrawing();
     }
 
-    unload_level();
+    level::unload();
     unload_sounds();
     unload_images();
     unload_fonts();
