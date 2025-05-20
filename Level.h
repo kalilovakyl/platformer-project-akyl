@@ -7,7 +7,7 @@
 class Level {
     size_t rows = 0, columns = 0;
     char *data = nullptr;
-    static int index = 0;
+    static int index;
 
     static std::vector<Level> all;
     static char* level_data;
