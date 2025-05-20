@@ -80,7 +80,7 @@ void load_level(int offset) {
 
     // Instantiate entities
     c_player.spawn();
-    c_enemy.spawn();
+    c_enemies.spawn();
 
     // Calculate positioning and sizes
     derive_graphics_metrics_from_loaded_level();

@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "player.h"
 #include "enemy.h"
+#include "enemies.h"
 
 #include <vector>
 #include <string>

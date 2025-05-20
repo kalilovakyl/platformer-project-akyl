@@ -36,7 +36,7 @@ void update_game() {
             }
 
             c_player.update();
-            c_enemy.update();
+            c_enemies.update_all();
 
             if (IsKeyPressed(KEY_ESCAPE)) {
                 game_state = PAUSED_STATE;
