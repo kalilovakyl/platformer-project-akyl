@@ -1,9 +1,14 @@
 #include "Player.h"
 #include "globals.h"
 
-Player c_player;
+Player* Player::instance = nullptr;
 
-Player::Player() {}
+Player& Player::get_instance() {
+    if (instance == nullptr) {
+        instance = new Player();
+    }
+    return *instance;
+}
 
 void Player::reset_stats() {
     lives = MAX_LIVES;
@@ -126,11 +131,11 @@ void Player::update() {
     }
 
     // Upon colliding with an enemy...
-    if (c_enemies.is_colliding_with(pos)) {
+    if (Enemy_manager::get_instance().is_colliding_with(pos)) {
         // ...check if their velocity is downwards...
         if (y_velocity > 0) {
             // ...if yes, award the player and kill the enemy
-            c_enemies.remove_colliding(pos);
+            Enemy_manager::get_instance().remove_colliding(pos);
             PlaySound(kill_enemy_sound);
 
             increment_score();

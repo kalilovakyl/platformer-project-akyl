@@ -19,21 +19,21 @@ void update_game() {
 
         case GAME_STATE:
             if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-                c_player.move_horizontally(PLAYER_MOVEMENT_SPEED);
+                Player::get_instance().move_horizontally(PLAYER_MOVEMENT_SPEED);
             }
 
             if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-                c_player.move_horizontally(-PLAYER_MOVEMENT_SPEED);
+                Player::get_instance().move_horizontally(-PLAYER_MOVEMENT_SPEED);
             }
 
             // Calculating collisions to decide whether the player is allowed to jump
-            c_player.set_is_on_ground(Level::is_colliding({c_player.get_x(), c_player.get_y() + 0.1f}, WALL));
-            if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_SPACE)) && c_player.get_is_on_ground()) {
-                c_player.set_y_velocity(-JUMP_STRENGTH);
+            Player::get_instance().set_is_on_ground(Level::is_colliding({Player::get_instance().get_x(), Player::get_instance().get_y() + 0.1f}, WALL));
+            if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_SPACE)) && Player::get_instance().get_is_on_ground()) {
+                Player::get_instance().set_y_velocity(-JUMP_STRENGTH);
             }
 
-            c_player.update();
-            c_enemies.update_all();
+            Player::get_instance().update();
+            Enemy_manager::get_instance().update_all();
 
             if (IsKeyPressed(KEY_ESCAPE)) {
                 game_state = PAUSED_STATE;
@@ -52,10 +52,10 @@ void update_game() {
             break;
 
         case DEATH_STATE:
-            c_player.update_gravity();
+            Player::get_instance().update_gravity();
 
             if (IsKeyPressed(KEY_ENTER)) {
-                if (c_player.get_lives() > 0) {
+                if (Player::get_instance().get_lives() > 0) {
                     Level::load(0);
                     game_state = GAME_STATE;
                 }
@@ -69,7 +69,7 @@ void update_game() {
         case GAME_OVER_STATE:
             if (IsKeyPressed(KEY_ENTER)) {
                 Level::reset_index();
-                c_player.reset_stats();
+                Player::get_instance().reset_stats();
                 game_state = GAME_STATE;
                 Level::load(0);
             }
@@ -78,7 +78,7 @@ void update_game() {
         case VICTORY_STATE:
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
                 Level::reset_index();
-                c_player.reset_stats();
+                Player::get_instance().reset_stats();
                 game_state = MENU_STATE;
                 SetExitKey(KEY_ESCAPE);
             }

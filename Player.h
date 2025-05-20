@@ -6,19 +6,26 @@
 const int LEVEL_COUNT = 3;
 
 class Player {
+    Player() {}
+
+    Player(const Player&) = delete;
+    Player& operator=(const Player&) = delete;
+
+    static Player* instance;
+
     float y_velocity = 0;
     Vector2 pos;
 
-    bool is_on_ground;
-    bool is_looking_forward;
-    bool is_moving;
+    bool is_on_ground = true;
+    bool is_looking_forward = true;
+    bool is_moving = false;
 
-    int level_scores[LEVEL_COUNT];
+    int level_scores[LEVEL_COUNT] = {0, 0, 0};
 
     const int MAX_LIVES = 5;
     int lives = MAX_LIVES;
 public:
-    Player();
+    static Player& get_instance();
 
     void reset_stats();
     void increment_score();
@@ -41,7 +48,5 @@ public:
     void set_is_on_ground(bool);
     void set_y_velocity(float);
 };
-
-extern Player c_player;
 
 #endif //PLAYER_H

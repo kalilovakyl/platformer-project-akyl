@@ -89,8 +89,8 @@ void Level::load(int offset) {
     }
 
     // Instantiate entities
-    c_player.spawn();
-    c_enemies.spawn();
+    Player::get_instance().spawn();
+    Enemy_manager::get_instance().spawn();
 
     // Calculate positioning and sizes
     derive_graphics_metrics_from_loaded_level();

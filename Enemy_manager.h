@@ -6,9 +6,16 @@
 #include "raylib.h"
 
 class Enemy_manager {
-    std::vector<Enemy> all_enemy;
-public:
     Enemy_manager() {}
+
+    Enemy_manager(const Enemy_manager&) = delete;
+    Enemy_manager& operator=(const Enemy_manager&) = delete;
+
+    static Enemy_manager* instance;
+
+    std::vector<Enemy> enemies;
+public:
+    static Enemy_manager& get_instance();
 
     void update_all();
     void spawn();
@@ -16,9 +23,7 @@ public:
     void remove_colliding(Vector2 pos);
 
     // getter
-    const std::vector<Enemy>& get_all_enemy() const { return all_enemy; }
+    const std::vector<Enemy>& get_enemies() const { return enemies; }
 };
-
-extern Enemy_manager c_enemies;
 
 #endif //ENEMIES_H
