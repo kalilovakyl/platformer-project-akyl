@@ -4,36 +4,46 @@
 #include "raylib.h"
 #include "vector"
 
-class Level {
-    size_t rows = 0, columns = 0;
-    char *data = nullptr;
-    static int index;
+struct LevelData {
+    size_t rows;
+    size_t columns;
+    const char* data;
 
-    static std::vector<Level> all;
-    static char* level_data;
-public:
-    Level(size_t c_rows, size_t c_columns, char *c_data)
+    LevelData(size_t c_rows, size_t c_columns, char* c_data)
         : rows(c_rows), columns(c_columns), data(c_data) {}
-
-    static bool is_inside(int row, int column);
-    static bool is_colliding(Vector2 pos, char look_for);
-    static char& get_collider(Vector2 pos, char look_for);
-
-    static void reset_index();
-    static void load(int offset);
-    static void unload();
-
-    // Getters and setters
-    static char& get_cell(size_t row, size_t column);
-    static void set_cell(size_t row, size_t column, char chr);
-
-    static size_t get_rows();
-    static size_t get_columns();
-    static int get_index();
 };
 
-extern Level LEVEL_1;
-extern Level LEVEL_2;
-extern Level LEVEL_3;
+class Level {
+    Level() {}
+
+    Level(const Level&) = delete;
+    Level& operator=(const Level&) = delete;
+
+    static Level* instance;
+
+    int current_index = 0;
+    std::vector<LevelData> levels;
+    char* current_level_data = nullptr;
+public:
+    static Level& get_instance();
+
+    void initialize(const std::vector<LevelData>& c_levels);
+
+    bool is_inside(int row, int column);
+    bool is_colliding(Vector2 pos, char look_for);
+    char& get_collider(Vector2 pos, char look_for);
+
+    void reset_index();
+    void load(int offset);
+    void unload();
+
+    // Getters and setters
+    char& get_cell(size_t row, size_t column);
+    void set_cell(size_t row, size_t column, char chr);
+
+    size_t get_rows();
+    size_t get_columns();
+    int get_index();
+};
 
 #endif //LEVEL_H

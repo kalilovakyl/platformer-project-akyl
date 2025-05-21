@@ -8,7 +8,7 @@ void Enemy::update() {
     next_x += (is_looking_right ? ENEMY_MOVEMENT_SPEED : -ENEMY_MOVEMENT_SPEED);
 
     // If its next position collides with a wall, turn around
-    if (Level::is_colliding({next_x, pos.y}, WALL)) {
+    if (Level::get_instance().is_colliding({next_x, pos.y}, WALL)) {
         is_looking_right = !is_looking_right;
     }
     // Otherwise, keep moving

@@ -13,7 +13,7 @@ void update_game() {
             if (IsKeyPressed(KEY_ENTER)) {
                 SetExitKey(0);
                 game_state = GAME_STATE;
-                Level::load(0);
+                Level::get_instance().load(0);
             }
             break;
 
@@ -27,7 +27,7 @@ void update_game() {
             }
 
             // Calculating collisions to decide whether the player is allowed to jump
-            Player::get_instance().set_is_on_ground(Level::is_colliding({Player::get_instance().get_x(), Player::get_instance().get_y() + 0.1f}, WALL));
+            Player::get_instance().set_is_on_ground(Level::get_instance().is_colliding({Player::get_instance().get_x(), Player::get_instance().get_y() + 0.1f}, WALL));
             if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W) || IsKeyDown(KEY_SPACE)) && Player::get_instance().get_is_on_ground()) {
                 Player::get_instance().set_y_velocity(-JUMP_STRENGTH);
             }
@@ -56,7 +56,7 @@ void update_game() {
 
             if (IsKeyPressed(KEY_ENTER)) {
                 if (Player::get_instance().get_lives() > 0) {
-                    Level::load(0);
+                    Level::get_instance().load(0);
                     game_state = GAME_STATE;
                 }
                 else {
@@ -68,16 +68,16 @@ void update_game() {
 
         case GAME_OVER_STATE:
             if (IsKeyPressed(KEY_ENTER)) {
-                Level::reset_index();
+                Level::get_instance().reset_index();
                 Player::get_instance().reset_stats();
                 game_state = GAME_STATE;
-                Level::load(0);
+                Level::get_instance().load(0);
             }
             break;
 
         case VICTORY_STATE:
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
-                Level::reset_index();
+                Level::get_instance().reset_index();
                 Player::get_instance().reset_stats();
                 game_state = MENU_STATE;
                 SetExitKey(KEY_ESCAPE);
@@ -118,6 +118,7 @@ void draw_game() {
             break;
 
         case VICTORY_STATE:
+            ClearBackground(BLACK);
             draw_victory_menu();
             break;
     }
@@ -132,7 +133,9 @@ int main() {
     load_fonts();
     load_images();
     load_sounds();
-    Level::load(0);
+    Level::get_instance().initialize(levels);
+    Level::get_instance().load(0);
+
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -143,7 +146,7 @@ int main() {
         EndDrawing();
     }
 
-    Level::unload();
+    Level::get_instance().unload();
     unload_sounds();
     unload_images();
     unload_fonts();

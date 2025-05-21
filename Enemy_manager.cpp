@@ -21,9 +21,9 @@ void Enemy_manager::spawn() {
     // Create enemies, incrementing their amount every time a new one is created
     enemies.clear();
 
-    for (size_t row = 0; row < Level::get_rows(); ++row) {
-        for (size_t column = 0; column < Level::get_columns(); ++column) {
-            char cell = Level::get_cell(row, column);
+    for (size_t row = 0; row < Level::get_instance().get_rows(); ++row) {
+        for (size_t column = 0; column < Level::get_instance().get_columns(); ++column) {
+            char cell = Level::get_instance().get_cell(row, column);
 
             if (cell == ENEMY) {
                 // Instantiate and add an enemy to the level
@@ -32,7 +32,7 @@ void Enemy_manager::spawn() {
                         true
                 });
 
-                Level::set_cell(row, column, AIR);
+                Level::get_instance().set_cell(row, column, AIR);
             }
         }
     }

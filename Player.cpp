@@ -19,7 +19,7 @@ void Player::reset_stats() {
 
 void Player::increment_score() {
     PlaySound(coin_sound);
-    level_scores[Level::get_index()]++;
+    level_scores[Level::get_instance().get_index()]++;
 }
 
 int Player::get_total_score() {
@@ -35,14 +35,14 @@ int Player::get_total_score() {
 void Player::spawn() {
     y_velocity = 0;
 
-    for (size_t row = 0; row < Level::get_rows(); ++row) {
-        for (size_t column = 0; column < Level::get_columns(); ++column) {
-            char cell = Level::get_cell(row, column);;
+    for (size_t row = 0; row < Level::get_instance().get_rows(); ++row) {
+        for (size_t column = 0; column < Level::get_instance().get_columns(); ++column) {
+            char cell = Level::get_instance().get_cell(row, column);;
 
             if (cell == PLAYER) {
                 pos.x = column;
                 pos.y = row;
-                Level::set_cell(row, column, AIR);
+                Level::get_instance().set_cell(row, column, AIR);
                 return;
             }
         }
@@ -54,14 +54,14 @@ void Player::kill() {
     PlaySound(player_death_sound);
     game_state = DEATH_STATE;
     lives--;
-    level_scores[Level::get_index()] = 0;
+    level_scores[Level::get_instance().get_index()] = 0;
 }
 
 void Player::move_horizontally(float delta) {
     // See if the player can move further without touching a wall;
     // otherwise, prevent them from getting into a wall by rounding their position
     float next_x = pos.x + delta;
-    if (!Level::is_colliding({next_x, pos.y}, WALL)) {
+    if (!Level::get_instance().is_colliding({next_x, pos.y}, WALL)) {
         pos.x = next_x;
     }
     else {
@@ -76,7 +76,7 @@ void Player::move_horizontally(float delta) {
 
 void Player::update_gravity() {
     // Bounce downwards if approaching a ceiling with upwards velocity
-    if (Level::is_colliding({pos.x, pos.y - 0.1f}, WALL) && y_velocity < 0) {
+    if (Level::get_instance().is_colliding({pos.x, pos.y - 0.1f}, WALL) && y_velocity < 0) {
         y_velocity = CEILING_BOUNCE_OFF;
     }
 
@@ -86,7 +86,7 @@ void Player::update_gravity() {
 
     // If the player is on ground, zero player's y-velocity
     // If the player is *in* ground, pull them out by rounding their position
-    is_on_ground = Level::is_colliding({pos.x, pos.y + 0.1f}, WALL);
+    is_on_ground = Level::get_instance().is_colliding({pos.x, pos.y + 0.1f}, WALL);
     if (is_on_ground) {
         y_velocity = 0;
         pos.y = roundf(pos.y);
@@ -97,12 +97,12 @@ void Player::update() {
     update_gravity();
 
     // Interacting with other level elements
-    if (Level::is_colliding(pos, COIN)) {
-        Level::get_collider(pos, COIN) = AIR; // Removes the coin
+    if (Level::get_instance().is_colliding(pos, COIN)) {
+        Level::get_instance().get_collider(pos, COIN) = AIR; // Removes the coin
         increment_score();
     }
 
-    if (Level::is_colliding(pos, EXIT)) {
+    if (Level::get_instance().is_colliding(pos, EXIT)) {
         // Reward player for being swift
         if (timer > 0) {
             // For every 9 seconds remaining, award the player 1 coin
@@ -116,7 +116,7 @@ void Player::update() {
         }
         else {
             // Allow the player to exit after the level timer goes to zero
-            Level::load(1);
+            Level::get_instance().load(1);
             PlaySound(exit_sound);
         }
     }
@@ -126,7 +126,7 @@ void Player::update() {
     }
 
     // Kill the player if they touch a spike or fall below the level
-    if (Level::is_colliding(pos, SPIKE) || pos.y > Level::get_rows()) {
+    if (Level::get_instance().is_colliding(pos, SPIKE) || pos.y > Level::get_instance().get_rows()) {
         kill();
     }
 

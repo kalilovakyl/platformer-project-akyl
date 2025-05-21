@@ -1,20 +1,29 @@
 #include "Level.h"
 #include "globals.h"
 
-Level LEVEL_1 = { 12, 72, LEVEL_1_DATA };
-Level LEVEL_2 = { 12, 78, LEVEL_2_DATA };
-Level LEVEL_3 = { 12, 86, LEVEL_3_DATA };
+Level* Level::instance = nullptr;
 
-std::vector<Level> Level::all = {
-    LEVEL_1, LEVEL_2, LEVEL_3
+std::vector<LevelData> levels = {
+    { 12, 72, LEVEL_1_DATA },
+    { 12, 78, LEVEL_2_DATA },
+    { 12, 86, LEVEL_3_DATA }
 };
 
-int Level::index = 0;
-char* Level::level_data = nullptr;
+Level& Level::get_instance() {
+    if (instance == nullptr) {
+        instance = new Level();
+    }
+    return *instance;
+}
+
+void Level::initialize(const std::vector<LevelData>& c_levels) {
+    levels = c_levels;
+    current_index = 0;
+}
 
 bool Level::is_inside(int row, int column) {
-    if (row < 0 || row >= all[index].rows) return false;
-    if (column < 0 || column >= all[index].columns) return false;
+    if (row < 0 || row >= levels[current_index].rows) return false;
+    if (column < 0 || column >= levels[current_index].columns) return false;
     return true;
 }
 
@@ -59,32 +68,28 @@ char& Level::get_collider(Vector2 pos, char look_for) {
 }
 
 void Level::reset_index() {
-    index = 0;
+    current_index = 0;
 }
 
 void Level::load(int offset) {
-    if (level_data != nullptr) {
-        unload();
-    }
-
-    index += offset;
+    current_index += offset;
 
     // Win logic
-    if (index >= all.size()) {
+    if (current_index >= levels.size()) {
         game_state = VICTORY_STATE;
         create_victory_menu_background();
-        index = 0;
+        current_index = 0;
         return;
     }
 
     // Level duplication
-    size_t rows = all[index].rows;
-    size_t columns = all[index].columns;
-    level_data = new char[rows*columns];
+    size_t rows = levels[current_index].rows;
+    size_t columns = levels[current_index].columns;
+    current_level_data = new char[rows*columns];
 
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-            level_data[row * columns + column] = all[index].data[row * columns + column];
+            current_level_data[row * columns + column] = levels[current_index].data[row * columns + column];
         }
     }
 
@@ -100,12 +105,15 @@ void Level::load(int offset) {
 }
 
 void Level::unload() {
-    delete[] level_data;
+    delete[] current_level_data;
+    current_level_data = nullptr;
 }
 
 // Getters and setters
 char& Level::get_cell(size_t row, size_t column) {
-    return level_data[row * all[index].columns + column];
+    size_t rows = get_rows();
+    size_t columns = get_columns();
+    return current_level_data[row * levels[current_index].columns + column];
 }
 
 void Level::set_cell(size_t row, size_t column, char chr) {
@@ -113,15 +121,15 @@ void Level::set_cell(size_t row, size_t column, char chr) {
 }
 
 size_t Level::get_rows() {
-    return all[index].rows;
+    return levels[current_index].rows;
 }
 
 size_t Level::get_columns() {
-    return all[index].columns;
+    return levels[current_index].columns;
 }
 int Level::get_index() {
-    if (index >= 0 && index < all.size()) {
-        return index;
+    if (current_index >= 0 && current_index < levels.size()) {
+        return current_index;
     }
     return 0;
 }
